@@ -1,0 +1,13 @@
+version: '3.8'
+services:
+  a-dashboard:
+    build: .
+    ports:
+      - "4201:4200"  # Host port 4201 → Container port 4200
+    container_name: a-dashboard-dev
+    volumes:
+      - .:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+    restart: unless-stopped 

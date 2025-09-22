@@ -1,0 +1,9 @@
+/* You can add global styles to this file, and also import other style files */
+
+// Your variable overrides
+$primary: #007bff;
+$secondary: #6c757d;
+// more overrides...
+
+// Import Bootstrap's source Sass files
+@import "../node_modules/bootstrap/scss/bootstrap";

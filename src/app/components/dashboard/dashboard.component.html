@@ -1,0 +1,121 @@
+<div class="dashboard-container">
+  <div class="dashboard-header">
+    <h1>⚡ A Battery Dashboard</h1>
+    <div class="header-controls">
+      <button 
+        class="btn btn-auto-refresh" 
+        [class.active]="autoRefresh()"
+        [class.loading]="isLoading()"
+        (click)="toggleAutoRefresh()">
+        @if (autoRefresh()) {
+          <span class="icon">🔄</span>
+          <span>Disable Auto Refresh</span>
+          <div class="refresh-indicator"></div>
+        } @else {
+          <span class="icon">▶️</span>
+          <span>Enable Auto Refresh</span>
+        }
+      </button>
+    </div>
+  </div>
+
+  @if (isLoading()) {
+    <div class="loading-container">
+      <div class="loading-spinner"></div>
+      <span>Loading dashboard data...</span>
+    </div>
+  }
+
+  <!-- Error State with enhanced error display -->
+  @if (errorMessage()) {
+    <div class="error-message" role="alert">
+      <div class="error-content">
+        <span class="error-icon">⚠️</span>
+        <div class="error-details">
+          <strong>Error occurred:</strong>
+          <p>{{ errorMessage() }}</p>
+        </div>
+      </div>
+      <div class="error-actions">
+        <button class="btn btn-retry" (click)="loadData()">
+          🔄 Retry
+        </button>
+      </div>
+    </div>
+  }
+
+  <!-- Status Elements -->
+  <div class="status-grid">
+    <div class="status-card battery-power">
+      <div class="status-icon">⚡</div>
+      <div class="status-content">
+        <h3>Battery Power</h3>
+        <div class="status-value">{{ batteryStatus()?.batteryPowerKw | number:'1.1-1' }} kW</div>
+      </div>
+    </div>
+
+    <div class="status-card battery-status" [style.border-left-color]="batteryStatusColor()">
+      <div class="status-icon">🔋</div>
+      <div class="status-content">
+        <h3>Battery Status</h3>
+        <div class="status-value" [style.color]="batteryStatusColor()">{{ batteryStatusType() }}</div>
+        <div class="status-detail">{{ batteryStatus()?.availableDischargePowerKw | number:'1.1-1' }} kW available</div>
+      </div>
+    </div>
+
+    <div class="status-card capacity-remaining">
+      <div class="status-icon">🔋</div>
+      <div class="status-content">
+        <h3>Capacity Remaining</h3>
+        <div class="status-value">{{ batteryStatus()?.chargeCapacityRemainingKwh | number:'1.1-1' }} kWh</div>
+        <div class="status-detail">Available for charging/discharging</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Chart Section -->
+  <div class="chart-section">
+    <div class="chart-controls">
+      <h2>📊 Power Analytics</h2>
+      <div class="timeframe-selector">
+        <label for="timeframe">Timeframe:</label>
+        <select 
+          id="timeframe" 
+          [value]="selectedTimeframe()" 
+          (change)="setTimeframe(+$any($event.target).value)"
+          class="form-select">
+          @for (option of timeframeOptions; track option.value) {
+            <option [value]="option.value">
+              {{ option.label }}
+            </option>
+          }
+        </select>
+      </div>
+    </div>
+
+    <div class="chart-container">
+      @if (chartOptions().series.length > 0) {
+        <apx-chart
+          [series]="chartOptions().series"
+          [chart]="chartOptions().chart"
+          [xaxis]="chartOptions().xaxis"
+          [yaxis]="chartOptions().yaxis"
+          [title]="chartOptions().title"
+          [stroke]="chartOptions().stroke"
+          [colors]="chartOptions().colors">
+        </apx-chart>
+      } @else {
+        <div class="no-data-message">
+          <div class="no-data-icon">📈</div>
+          <h3>No Chart Data Available</h3>
+          <p>Data will appear here once telemetry is loaded.</p>
+          @if (errorMessage()) {
+            <button class="btn btn-secondary" (click)="loadTelemetry()">
+              🔄 Reload Chart Data
+            </button>
+          }
+        </div>
+      }
+    </div>
+  </div>
+</div>
