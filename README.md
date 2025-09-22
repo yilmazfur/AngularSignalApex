@@ -163,4 +163,3 @@ ng serve
 - **Accessibility**: Add ARIA labels, keyboard navigation, and screen reader support
 - **Logging**: Replace console.log with structured logging for production monitoring
 
-<img width="1356" height="886" alt="image" src="https://github.com/user-attachments/assets/c5af6f04-ddab-4e7c-85e8-26959203f5a3" />
